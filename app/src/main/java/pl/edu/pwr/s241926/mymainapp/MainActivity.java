@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             sendCommandThread = new SendCommandThread();
             sendCommandThread.start();
             SaveLoadAppData data = new SaveLoadAppData(MainActivity.this);
-            data.saveData(2,false,false,false,false,false);
+            //data.saveData(2,false,false,false,false,false);
             btConnectedThread.sendCommandViaBluetooth(data.getDataREFRESH());
         }
     }
@@ -84,7 +84,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //btConnectedThread.sendCommandViaBluetooth("___ON___");//uszkodzone
         }
         if (v.getId() == R.id.buttonSwitch) {
-            btConnectedThread.sendCommandViaBluetooth("____SW____");
+            //btConnectedThread.sendCommandViaBluetooth("____SW____");
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         }
         if (v.getId() == R.id.takeTempHumButton) {
             btConnectedThread.sendCommandViaBluetooth("____TH____");

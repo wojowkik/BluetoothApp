@@ -38,4 +38,5 @@ class SaveLoadAppData
         else
             return "DISPLAY"+displayOption+":"+"F";//DISPLAY1:F - Display1_FALSE
     }
+    //R10DISTTFFT
 }
