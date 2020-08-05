@@ -14,13 +14,13 @@ class TimeCommands
         System.out.println(currentTime);
     }
     String getDateCommand(){
-        return "T" + DateFormat.getTimeInstance().format(currentTime.getTime());//9 znakow
+        return "T:" + DateFormat.getTimeInstance().format(currentTime.getTime());//10 znakow
     }
     String getTimeCommand(){
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
         String date = sdf.format(currentTime);
-        date = "D" + date; //D - oznaczenie daty
+        date = "D:" + date; //D - oznaczenie daty
         System.out.println(date);
-        return date; //9 znaków
+        return date; //10 znaków
     }
 }

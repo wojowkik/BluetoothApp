@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     BluetoothAdapter bluetoothAdapter;
     BluetoothSocket  bluetoothSocket = null;
     BTconnectedThread btConnectedThread =null; SendCommandThread sendCommandThread;
-    String bluetoothAddress = null, messageFromMCU = null, nameOfBluetoothModule = "HC-05";
+    String bluetoothAddress = null, messageFromMCU, nameOfBluetoothModule = "HC-05";
     boolean isBluetoothConnection = false;
 
     TextView textView, textViewTEMP, textViewHUM;
@@ -60,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(isBluetoothConnection){
             sendCommandThread = new SendCommandThread();
             sendCommandThread.start();
+            SaveLoadAppData data = new SaveLoadAppData(MainActivity.this);
+            data.saveData(2,false,false,false,false,false);
+            btConnectedThread.sendCommandViaBluetooth(data.getDataREFRESH());
         }
     }
     @Override/////////////////////////ON PAUSE ///////////////////////
@@ -77,14 +80,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             btConnectedThread.sendCommandViaBluetooth(commands.getTimeCommand());
         }
         if (v.getId() == R.id.buttonOnOff) {
-            btConnectedThread.sendCommandViaBluetooth("____ON___");
+            btConnectedThread.sendCommandViaBluetooth("____ON____");
             //btConnectedThread.sendCommandViaBluetooth("___ON___");//uszkodzone
         }
         if (v.getId() == R.id.buttonSwitch) {
-            btConnectedThread.sendCommandViaBluetooth("____SW___");
+            btConnectedThread.sendCommandViaBluetooth("____SW____");
         }
         if (v.getId() == R.id.takeTempHumButton) {
-            btConnectedThread.sendCommandViaBluetooth("____TH___");
+            btConnectedThread.sendCommandViaBluetooth("____TH____");
             //btConnectedThread.sendCommandViaBluetooth("123456789");//uszkodzone
             //messageDisplay();
         }
@@ -222,15 +225,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     /////////////////////////////
     private class SendCommandThread extends Thread{
-        String temp, hum, incomeText;
+        String temp = "TEMP", hum = "HUM", incomeText;
         volatile boolean isThreadOn = true;
 
         private void setText(String text){
-            if(text.charAt(1) == 'T' && text.charAt(2) == 'E' && text.charAt(3) == 'M') {
-                temp = "TEMP: "+text.charAt(4)+text.charAt(5)+"°C";
-            }
-            if(text.charAt(6) == 'H' && text.charAt(7) == 'U' && text.charAt(8) == 'M') {
-                hum = "HUM: "+text.charAt(9)+text.charAt(10)+"%";
+            if(text != null)//[rzy uruchomieniu jest null
+            {
+                if(text.charAt(1) == 'T' && text.charAt(2) == 'E' && text.charAt(3) == 'M') {
+                    temp = "TEMP: "+text.charAt(4)+text.charAt(5)+"°C";
+                }
+                if(text.charAt(6) == 'H' && text.charAt(7) == 'U' && text.charAt(8) == 'M') {
+                    hum = "HUM: "+text.charAt(9)+text.charAt(10)+"%";
+                }
             }
         }
         void setIncomeText(String text){
@@ -247,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             {
                 try{
                     sleep(1000);//opóźnienie kolejnego pomiaru
-                    btConnectedThread.sendCommandViaBluetooth("____TH___");
+                    btConnectedThread.sendCommandViaBluetooth("____TH____");
                     sleep(500);
                     setText(incomeText);
                     runOnUiThread(new Runnable() { //https://medium.com/@yossisegev/understanding-activity-runonuithread-e102d388fe93
