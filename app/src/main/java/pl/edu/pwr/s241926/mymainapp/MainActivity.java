@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         btConnect();
+        /*
         btConnectedThread = new BTconnectedThread(bluetoothSocket);
         btConnectedThread.start();
         if(isBluetoothConnection){
@@ -62,8 +63,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             sendCommandThread.start();
             SaveLoadAppData data = new SaveLoadAppData(MainActivity.this);
             //data.saveData(2,false,false,false,false,false);
-            btConnectedThread.sendCommandViaBluetooth(data.getDataREFRESH());
+            TimeCommands commands = new TimeCommands();
+            btConnectedThread.sendCommandViaBluetooth(commands.getDateCommand());
+            btConnectedThread.sendCommandViaBluetooth(commands.getTimeCommand());
+            btConnectedThread.sendCommandViaBluetooth(data.getCommand());
         }
+
+         */
     }
     @Override/////////////////////////ON PAUSE ///////////////////////
     protected void onPause() {
@@ -113,6 +119,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btFindPairedDevices();
         try {
             btMakeConnection();
+            //
+            btConnectedThread = new BTconnectedThread(bluetoothSocket);
+            btConnectedThread.start();
+            if(isBluetoothConnection){
+                sendCommandThread = new SendCommandThread();
+                sendCommandThread.start();
+                SaveLoadAppData data = new SaveLoadAppData(MainActivity.this);
+                //data.saveData(2,false,false,false,false,false);
+                TimeCommands commands = new TimeCommands();
+                btConnectedThread.sendCommandViaBluetooth(commands.getDateCommand());
+                btConnectedThread.sendCommandViaBluetooth(commands.getTimeCommand());
+                btConnectedThread.sendCommandViaBluetooth(data.getCommand());
+            }
+            //
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Connection error", Toast.LENGTH_SHORT).show();
         }

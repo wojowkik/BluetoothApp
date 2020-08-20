@@ -1,6 +1,7 @@
 package pl.edu.pwr.s241926.mymainapp;
 
 import android.content.Context;
+import android.content.SearchRecentSuggestionsProvider;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -10,33 +11,45 @@ class SaveLoadAppData
     SaveLoadAppData(Context context){
         myPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
-    void saveData(int refreshTime, boolean disp1, boolean disp2, boolean disp3, boolean disp4, boolean disp5) {
+    void saveData(int refreshTime, boolean disp6, boolean disp7, boolean disp8, boolean disp9) {
         SharedPreferences.Editor myEditor = myPreferences.edit();
-        String napis = "REFRESH:";
+        String napis = "";
         if(refreshTime < 10){
             napis+="0"+refreshTime;
         }
         else{
             napis+=refreshTime;
         }
-        myEditor.putString("REFRESH", napis);
-        myEditor.putBoolean("DISP1", disp1);
-        myEditor.putBoolean("DISP2", disp2);
-        myEditor.putBoolean("DISP3", disp3);
-        myEditor.putBoolean("DISP4", disp4);
-        myEditor.putBoolean("DISP5", disp5);
+        myEditor.putString("REFRESH", napis);//10 np.
+        myEditor.putBoolean("DISP6", disp6);
+        myEditor.putBoolean("DISP7", disp7);
+        myEditor.putBoolean("DISP8", disp8);
+        myEditor.putBoolean("DISP9", disp9);
         myEditor.apply();
     }
     String getDataREFRESH() {
         return myPreferences.getString("REFRESH", "REFRESH:10");
-    }
-    String getDataDISP(int displayOption) {
-        String key = "DISP"+displayOption;
-        if(myPreferences.getBoolean(key,true)) {
-            return "DISPLAY"+displayOption+":"+"T";//DISPLAY1:T - Display1_TRUE
+    }//do wywalenia
+
+
+    String getCommand() {
+        String napis = "R:";
+        napis += myPreferences.getString("REFRESH", "03");
+        napis+="D:    ";
+        for(int i = 6 ; i<10 ; i++){
+            napis = setChar(i, napis);
         }
-        else
-            return "DISPLAY"+displayOption+":"+"F";//DISPLAY1:F - Display1_FALSE
+        return napis;
     }
-    //R10DISTTFFT
+    private String setChar(int dispPos, String comand) {
+        char[] chars = comand.toCharArray();
+        String key = "DISP"+dispPos;
+        if(myPreferences.getBoolean(key,true)) {
+            chars[dispPos] = '1';
+        }
+        else{
+            chars[dispPos] = '0';
+        }
+        return String.valueOf(chars);
+    }
 }

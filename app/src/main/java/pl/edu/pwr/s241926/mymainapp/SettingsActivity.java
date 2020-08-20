@@ -2,6 +2,7 @@ package pl.edu.pwr.s241926.mymainapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -28,9 +29,10 @@ public class SettingsActivity extends AppCompatActivity implements NumberPicker.
         checkBox3.setOnClickListener(this);
         checkBox4.setOnClickListener(this);
         checkBox5.setOnClickListener(this);
-/////////////////////////////////////////////////////////////////
+/////////////////BUTTON //////////////////////////////////////
         Button buttonEnter = findViewById(R.id.button1);
         buttonEnter.setOnClickListener(this);
+        ////////NUMBER PICKER ///////////////////////////////
         NumberPicker numberPicker = findViewById(R.id.numerPicker);
         numberPicker.setOnValueChangedListener(this);
         numberPicker.setMinValue(1); numberPicker.setMaxValue(99);
@@ -54,7 +56,10 @@ public class SettingsActivity extends AppCompatActivity implements NumberPicker.
         }
         if(v.getId() == R.id.button1) {
             SaveLoadAppData save = new SaveLoadAppData(SettingsActivity.this);
-            save.saveData(refreshValue, checkBox1.isChecked(), checkBox2.isChecked(), checkBox3.isChecked(), checkBox4.isChecked(), checkBox5.isChecked());
+            save.saveData(refreshValue, checkBox2.isChecked(), checkBox3.isChecked(), checkBox4.isChecked(), checkBox5.isChecked());
+            checkBox1.setText(save.getCommand());//do usuniecie
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);//powrót do MainActivity - może jest lepszy sposób
         }
     }
 }
