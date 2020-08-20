@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     boolean isBluetoothConnection = false;
 
     TextView textView, textViewTEMP, textViewHUM;
-    Button onButton, offButton, reconnectButton, switchButton, takeTempHumButton;
+    Button  onOffButton, reconnectButton, switchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,17 +39,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textViewHUM     = findViewById(R.id.textViewHUM);
         textViewTEMP    = findViewById(R.id.textViewTEMP);
         //Buttons//////////////////////////////////////
-        onButton            = findViewById(R.id.buttonSetTime);
-        offButton           = findViewById(R.id.buttonOnOff);
+        onOffButton           = findViewById(R.id.buttonOnOff);
         switchButton        = findViewById(R.id.buttonSwitch);
         reconnectButton     = findViewById(R.id.buttonReConnect);
-        takeTempHumButton   = findViewById(R.id.takeTempHumButton);
         //button listeners/////////////////////////////
-        onButton.setOnClickListener(this);
-        offButton.setOnClickListener(this);
+        onOffButton.setOnClickListener(this);
         switchButton.setOnClickListener(this);
         reconnectButton.setOnClickListener(this);
-        takeTempHumButton.setOnClickListener(this);
     }
     @Override//////////////////////////ON RESUME //////////////////////
     protected void onResume() {
@@ -76,15 +72,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onPause();
         btDisconnect();
         sendCommandThread.stopMe();
+        btConnectedThread.stopMe();
     }
     @Override///////////////////////ON CLICK//////////////////////////
     public void onClick(View v)
     {
-        if (v.getId() == R.id.buttonSetTime) {
-            TimeCommands commands = new TimeCommands();
-            btConnectedThread.sendCommandViaBluetooth(commands.getDateCommand());
-            btConnectedThread.sendCommandViaBluetooth(commands.getTimeCommand());
-        }
         if (v.getId() == R.id.buttonOnOff) {
             btConnectedThread.sendCommandViaBluetooth("____ON____");
             //btConnectedThread.sendCommandViaBluetooth("___ON___");//uszkodzone
@@ -92,25 +84,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v.getId() == R.id.buttonSwitch) {
             //btConnectedThread.sendCommandViaBluetooth("____SW____");
             Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-        }
-        if (v.getId() == R.id.takeTempHumButton) {
-            btConnectedThread.sendCommandViaBluetooth("____TH____");
-            //btConnectedThread.sendCommandViaBluetooth("123456789");//uszkodzone
-            //messageDisplay();
+            startActivityForResult(intent,0);
         }
         if (v.getId() == R.id.buttonReConnect) {
-            if (!isBluetoothConnection) {
-                try {
-                    btMakeConnection();
-                } //connection=true;
-                catch (Exception e) {
-                    Toast.makeText(getApplicationContext(), "Connection device  error", Toast.LENGTH_SHORT).show();
-                }
-                if(isBluetoothConnection){
-                    sendCommandThread = new SendCommandThread();
-                    sendCommandThread.start();
-                }
+            if(!isBluetoothConnection){
+                btConnect();
             }
         }
     }
@@ -119,10 +97,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btFindPairedDevices();
         try {
             btMakeConnection();
-            //
-            btConnectedThread = new BTconnectedThread(bluetoothSocket);
-            btConnectedThread.start();
             if(isBluetoothConnection){
+                btConnectedThread = new BTconnectedThread(bluetoothSocket);
+                btConnectedThread.start();
                 sendCommandThread = new SendCommandThread();
                 sendCommandThread.start();
                 SaveLoadAppData data = new SaveLoadAppData(MainActivity.this);
@@ -183,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             if (!bluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+                startActivity(enableBtIntent);
             }
         }
     }
@@ -191,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private class BTconnectedThread extends Thread {
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
-
+        private volatile boolean isThreadOn=true;
         //creation of the connect thread
         BTconnectedThread(BluetoothSocket socket) {
             InputStream tmpIn = null;
@@ -207,13 +184,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
         }
+        void stopMe(){
+            isThreadOn=false;
+        }
 
         public void run() {
             byte[] buffer = new byte[15];
             int bytes;
             String text;
             // Keep looping to listen for received messages
-            while (true) {
+            while (isThreadOn) {
                 try {
                     bytes = mmInStream.read(buffer);            //read bytes from input buffer
                     if(buffer[0] == 'M')
@@ -276,6 +256,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try{
                     sleep(1000);//opóźnienie kolejnego pomiaru
                     btConnectedThread.sendCommandViaBluetooth("____TH____");
+                    btConnectedThread.sendCommandViaBluetooth("____ON____");
                     sleep(500);
                     setText(incomeText);
                     runOnUiThread(new Runnable() { //https://medium.com/@yossisegev/understanding-activity-runonuithread-e102d388fe93

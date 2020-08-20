@@ -8,25 +8,13 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/buttonSetTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#FFEE58"
-        android:backgroundTint="#AB47BC"
-        android:text="SET TIME"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
         android:id="@+id/buttonReConnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#29B6F6"
-        android:text="ReCon"
+        android:text="RECONECT"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,38 +22,25 @@
         android:id="@+id/buttonOnOff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="188dp"
         android:backgroundTint="#EF5350"
-        android:text="ON / OFF"
+        android:text="ON / OFF LED"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonSetTime"
-        app:layout_constraintVertical_bias="0.129" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/buttonSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#FFCA28"
-        android:text="Switch"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="USTAWIENIA"
+        app:layout_constraintBottom_toTopOf="@+id/buttonOnOff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonOnOff"
-        app:layout_constraintVertical_bias="0.168" />
-
-    <Button
-        android:id="@+id/takeTempHumButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#5C6BC0"
-        android:text="TEMP / HUM"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonSwitch" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonReConnect" />
 
     <TextView
         android:id="@+id/textView1"
@@ -83,22 +58,21 @@
         android:id="@+id/textViewTEMP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="140dp"
         android:text="TEMP"
-        app:layout_constraintBottom_toTopOf="@+id/buttonSetTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.294" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewHUM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="HUM"
-        app:layout_constraintBottom_toTopOf="@+id/buttonSetTime"
+        app:layout_constraintBottom_toTopOf="@+id/buttonReConnect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewTEMP"
-        app:layout_constraintVertical_bias="0.095" />
+        app:layout_constraintVertical_bias="0.158" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

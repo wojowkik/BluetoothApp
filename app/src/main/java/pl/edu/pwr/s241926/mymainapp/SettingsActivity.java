@@ -2,12 +2,14 @@ package pl.edu.pwr.s241926.mymainapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.NumberPicker;
+import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity implements NumberPicker.OnValueChangeListener, View.OnClickListener {
 
@@ -58,8 +60,8 @@ public class SettingsActivity extends AppCompatActivity implements NumberPicker.
             SaveLoadAppData save = new SaveLoadAppData(SettingsActivity.this);
             save.saveData(refreshValue, checkBox2.isChecked(), checkBox3.isChecked(), checkBox4.isChecked(), checkBox5.isChecked());
             checkBox1.setText(save.getCommand());//do usuniecie
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);//powrót do MainActivity - może jest lepszy sposób
+            Toast.makeText(getApplicationContext(), "Settings saved - please wait", Toast.LENGTH_SHORT).show();
+            finish();//close activity
         }
     }
 }
