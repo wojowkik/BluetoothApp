@@ -20,8 +20,8 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    public static final int REQUEST_ENABLE_BT = 1;
-    BluetoothAdapter bluetoothAdapter;
+    public static final int REQUEST_ENABLE_BT = 1;//musi być tak
+    BluetoothAdapter bluetoothAdapter = null;
     BluetoothSocket  bluetoothSocket = null;
     BTconnectedThread btConnectedThread =null; SendCommandThread sendCommandThread;
     String bluetoothAddress = null, messageFromMCU, nameOfBluetoothModule = "HC-05";
@@ -71,8 +71,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         btDisconnect();
-        sendCommandThread.stopMe();
-        btConnectedThread.stopMe();
     }
     @Override///////////////////////ON CLICK//////////////////////////
     public void onClick(View v)
@@ -84,12 +82,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v.getId() == R.id.buttonSwitch) {
             //btConnectedThread.sendCommandViaBluetooth("____SW____");
             Intent intent = new Intent(this, SettingsActivity.class);
-            startActivityForResult(intent,0);
+            startActivity(intent);
         }
         if (v.getId() == R.id.buttonReConnect) {
-            if(!isBluetoothConnection){
+            btDisconnect();
+            //if(!isBluetoothConnection){
                 btConnect();
-            }
+            //}
         }
     }
     private void btConnect() {////////////////////////////BTconnect/////////////////////////////////////////
@@ -97,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btFindPairedDevices();
         try {
             btMakeConnection();
+            //
             if(isBluetoothConnection){
                 btConnectedThread = new BTconnectedThread(bluetoothSocket);
                 btConnectedThread.start();
@@ -109,10 +109,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btConnectedThread.sendCommandViaBluetooth(commands.getTimeCommand());
                 btConnectedThread.sendCommandViaBluetooth(data.getCommand());
             }
-            //
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Connection error", Toast.LENGTH_SHORT).show();
         }
+
     }
     private void btMakeConnection() {////////////////////////////////////////BTmakeConnection//////////////////////////////
         try {
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             isBluetoothConnection = true;
 
         } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "ERROR - try connect again", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -133,7 +133,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             bluetoothSocket.close();
             textView.setText("disconect");
             isBluetoothConnection = false;
-        } catch (IOException e) {
+            sendCommandThread.stopMe();
+            btConnectedThread.stopMe();
+        } catch (Exception e) {//powodowało błędy z połączeniem, uruchamianiem BT - "IOExeption" - po zamianie działą
             Toast.makeText(getApplicationContext(), "Could not close the client socket", Toast.LENGTH_SHORT).show();
         }
     }
@@ -160,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             if (!bluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivity(enableBtIntent);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             }
         }
     }
@@ -233,11 +235,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         private void setText(String text){
             if(text != null)//[rzy uruchomieniu jest null
             {
-                if(text.charAt(1) == 'T' && text.charAt(2) == 'E' && text.charAt(3) == 'M') {
-                    temp = "TEMP: "+text.charAt(4)+text.charAt(5)+"°C";
-                }
-                if(text.charAt(6) == 'H' && text.charAt(7) == 'U' && text.charAt(8) == 'M') {
-                    hum = "HUM: "+text.charAt(9)+text.charAt(10)+"%";
+                if(text.length()==11){
+                    if(text.charAt(1) == 'T' && text.charAt(2) == 'E' && text.charAt(3) == 'M') {
+                        temp = "TEMP: "+text.charAt(4)+text.charAt(5)+"°C";
+                    }
+                    if(text.charAt(6) == 'H' && text.charAt(7) == 'U' && text.charAt(8) == 'M') {
+                        hum = "HUM: "+text.charAt(9)+text.charAt(10)+"%";
+                    }
                 }
             }
         }

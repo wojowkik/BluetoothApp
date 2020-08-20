@@ -1,7 +1,6 @@
 package pl.edu.pwr.s241926.mymainapp;
 
 import android.content.Context;
-import android.content.SearchRecentSuggestionsProvider;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -27,11 +26,6 @@ class SaveLoadAppData
         myEditor.putBoolean("DISP9", disp9);
         myEditor.apply();
     }
-    String getDataREFRESH() {
-        return myPreferences.getString("REFRESH", "REFRESH:10");
-    }//do wywalenia
-
-
     String getCommand() {
         String napis = "R:";
         napis += myPreferences.getString("REFRESH", "03");

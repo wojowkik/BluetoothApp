@@ -60,6 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="140dp"
         android:text="TEMP"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -69,6 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="HUM"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/buttonReConnect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
