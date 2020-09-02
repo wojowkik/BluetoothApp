@@ -258,10 +258,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             while (isThreadOn)
             {
                 try{
-                    sleep(1000);//opóźnienie kolejnego pomiaru
+                    sleep(1500);//opóźnienie kolejnego pomiaru
                     btConnectedThread.sendCommandViaBluetooth("____TH____");
-                    btConnectedThread.sendCommandViaBluetooth("____ON____");
-                    sleep(500);
+                    //btConnectedThread.sendCommandViaBluetooth("____ON____");//nie dziala
                     setText(incomeText);
                     runOnUiThread(new Runnable() { //https://medium.com/@yossisegev/understanding-activity-runonuithread-e102d388fe93
                         @Override
