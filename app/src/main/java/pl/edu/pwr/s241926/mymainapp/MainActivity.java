@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     boolean isBluetoothConnection = false;
 
     TextView textView, textViewTEMP, textViewHUM;
-    Button  onOffButton, reconnectButton, switchButton;
+    Button reconnectButton, switchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +39,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textViewHUM     = findViewById(R.id.textViewHUM);
         textViewTEMP    = findViewById(R.id.textViewTEMP);
         //Buttons//////////////////////////////////////
-        onOffButton           = findViewById(R.id.buttonOnOff);
         switchButton        = findViewById(R.id.buttonSwitch);
         reconnectButton     = findViewById(R.id.buttonReConnect);
         //button listeners/////////////////////////////
-        onOffButton.setOnClickListener(this);
         switchButton.setOnClickListener(this);
         reconnectButton.setOnClickListener(this);
     }
@@ -51,21 +49,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         btConnect();
-        /*
-        btConnectedThread = new BTconnectedThread(bluetoothSocket);
-        btConnectedThread.start();
-        if(isBluetoothConnection){
-            sendCommandThread = new SendCommandThread();
-            sendCommandThread.start();
-            SaveLoadAppData data = new SaveLoadAppData(MainActivity.this);
-            //data.saveData(2,false,false,false,false,false);
-            TimeCommands commands = new TimeCommands();
-            btConnectedThread.sendCommandViaBluetooth(commands.getDateCommand());
-            btConnectedThread.sendCommandViaBluetooth(commands.getTimeCommand());
-            btConnectedThread.sendCommandViaBluetooth(data.getCommand());
-        }
-
-         */
     }
     @Override/////////////////////////ON PAUSE ///////////////////////
     protected void onPause() {
@@ -73,22 +56,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btDisconnect();
     }
     @Override///////////////////////ON CLICK//////////////////////////
-    public void onClick(View v)
-    {
-        if (v.getId() == R.id.buttonOnOff) {
-            btConnectedThread.sendCommandViaBluetooth("____ON____");
-            //btConnectedThread.sendCommandViaBluetooth("___ON___");//uszkodzone
-        }
+    public void onClick(View v) {
         if (v.getId() == R.id.buttonSwitch) {
-            //btConnectedThread.sendCommandViaBluetooth("____SW____");
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
         }
         if (v.getId() == R.id.buttonReConnect) {
             btDisconnect();
-            //if(!isBluetoothConnection){
-                btConnect();
-            //}
+            btConnect();
         }
     }
     private void btConnect() {////////////////////////////BTconnect/////////////////////////////////////////
@@ -97,13 +72,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             btMakeConnection();
             //
-            if(isBluetoothConnection){
+            if(isBluetoothConnection) {
                 btConnectedThread = new BTconnectedThread(bluetoothSocket);
                 btConnectedThread.start();
                 sendCommandThread = new SendCommandThread();
                 sendCommandThread.start();
                 SaveLoadAppData data = new SaveLoadAppData(MainActivity.this);
-                //data.saveData(2,false,false,false,false,false);
                 TimeCommands commands = new TimeCommands();
                 btConnectedThread.sendCommandViaBluetooth(commands.getDateCommand());
                 btConnectedThread.sendCommandViaBluetooth(commands.getTimeCommand());
@@ -112,46 +86,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Connection error", Toast.LENGTH_SHORT).show();
         }
-
     }
     private void btMakeConnection() {////////////////////////////////////////BTmakeConnection//////////////////////////////
         try {
             BluetoothDevice bluetoothDevice = bluetoothAdapter.getRemoteDevice(bluetoothAddress);
             bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(myUUID);
             bluetoothSocket.connect();
-            textView.setText("BT Address: " + bluetoothAddress);
             Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
             isBluetoothConnection = true;
-
+            textView.setText("Connected");
         } catch (Exception e) {
+            textView.setText("Disconnected");
             Toast.makeText(getApplicationContext(), "ERROR - try connect again", Toast.LENGTH_SHORT).show();
         }
-
     }
     private void btDisconnect() {//////////////////////////////////BTdisconnect///////////////////////////////
         try {
             bluetoothSocket.close();
-            textView.setText("disconect");
+            textView.setText("Disconnected");
             isBluetoothConnection = false;
+        } catch (Exception e) {//powodowało błędy z połączeniem, uruchamianiem BT - "IOExeption" - po zamianie działą
+            Toast.makeText(getApplicationContext(), "Could not close the client socket", Toast.LENGTH_SHORT).show();
+        }
+        try {
             sendCommandThread.stopMe();
             btConnectedThread.stopMe();
         } catch (Exception e) {//powodowało błędy z połączeniem, uruchamianiem BT - "IOExeption" - po zamianie działą
-            Toast.makeText(getApplicationContext(), "Could not close the client socket", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Could not close thread", Toast.LENGTH_SHORT).show();
         }
     }
     private void btFindPairedDevices() {/////////////////////////////BTfindPairedDevices//////////////////////////////
         Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
-        textView.setText("");
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
-                String deviceName = device.getName();
-                String deviceHardwareAddress = device.getAddress();
+                String deviceName = device.getName();//do wywalenia
+                String deviceHardwareAddress = device.getAddress();//do wywalenia
                 if (deviceName.equals(nameOfBluetoothModule)) {
-                    textView.append("D: " + deviceName + "\nA: " + deviceHardwareAddress + "\n");
                     bluetoothAddress = deviceHardwareAddress;
+                    bluetoothAdapter.cancelDiscovery();
                 }
             }
-
         }
     }
     private void btTurnOn() {///////////////////////////////////////BTturnOn////////////////////////////////////////////
@@ -191,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         public void run() {
-            byte[] buffer = new byte[15];
+            byte[] buffer = new byte[100];
             int bytes;
             String text;
             // Keep looping to listen for received messages
@@ -212,7 +186,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
-
         //write method
         void sendCommandViaBluetooth(String input) {
             try {
@@ -220,27 +193,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 sendCommandThread.setIncomeText(messageFromMCU);
             } catch (IOException e) {
                 //if you cannot write, close the application
-                Toast.makeText(getBaseContext(), "Connection Failure", Toast.LENGTH_LONG).show();
-                finish();
+                Toast.makeText(getBaseContext(), "THREAD Failure", Toast.LENGTH_LONG).show();
+                System.exit(0);
             }
-
-
         }
     }
     /////////////////////////////
     private class SendCommandThread extends Thread{
-        String temp = "TEMP", hum = "HUM", incomeText;
+        String temp = "Temperatura", hum = "Wilgotność", incomeText;
+        int licznik;
         volatile boolean isThreadOn = true;
 
         private void setText(String text){
-            if(text != null)//[rzy uruchomieniu jest null
+            if(text != null)//przy uruchomieniu jest null
             {
                 if(text.length()==11){
                     if(text.charAt(1) == 'T' && text.charAt(2) == 'E' && text.charAt(3) == 'M') {
-                        temp = "TEMP: "+text.charAt(4)+text.charAt(5)+"°C";
+                        temp = "Temperatura: "+text.charAt(4)+text.charAt(5)+"°C";
                     }
                     if(text.charAt(6) == 'H' && text.charAt(7) == 'U' && text.charAt(8) == 'M') {
-                        hum = "HUM: "+text.charAt(9)+text.charAt(10)+"%";
+                        hum = "Wilgotność: "+text.charAt(9)+text.charAt(10)+"%";
                     }
                 }
             }
@@ -258,15 +230,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             while (isThreadOn)
             {
                 try{
-                    sleep(1500);//opóźnienie kolejnego pomiaru
+                    sleep(2500);//opóźnienie kolejnego pomiaru
                     btConnectedThread.sendCommandViaBluetooth("____TH____");
-                    //btConnectedThread.sendCommandViaBluetooth("____ON____");//nie dziala
                     setText(incomeText);
                     runOnUiThread(new Runnable() { //https://medium.com/@yossisegev/understanding-activity-runonuithread-e102d388fe93
                         @Override
                     public void run() {
                                 textViewTEMP.setText(temp);
-                                textViewHUM.setText(hum);
+                                textViewHUM.setText(hum);//może powinno się do innego thread przenieść
+                                textView.setText(""+licznik++);
                     }
                 });
                 }catch (Exception e){

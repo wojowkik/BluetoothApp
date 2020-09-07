@@ -19,34 +19,23 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/buttonOnOff"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="188dp"
-        android:backgroundTint="#EF5350"
-        android:text="ON / OFF LED"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
         android:id="@+id/buttonSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#FFCA28"
         android:text="USTAWIENIA"
-        app:layout_constraintBottom_toTopOf="@+id/buttonOnOff"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonReConnect" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonReConnect"
+        app:layout_constraintVertical_bias="0.071" />
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="disconect"
+        android:text="Disconnected"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/buttonReConnect"
         app:layout_constraintHorizontal_bias="0.1"
@@ -59,7 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="140dp"
-        android:text="TEMP"
+        android:text="Temperatura"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +58,7 @@
         android:id="@+id/textViewHUM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="HUM"
+        android:text="Wilgotność"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/buttonReConnect"
         app:layout_constraintEnd_toEndOf="parent"
