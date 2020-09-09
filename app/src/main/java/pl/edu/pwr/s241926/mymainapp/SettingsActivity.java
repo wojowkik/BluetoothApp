@@ -10,11 +10,12 @@ import android.widget.Toast;
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private CheckBox checkBox1, checkBox2, checkBox3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        ///////////CHECKBOX////////////////////////////
+        ///////////CHECKBOX///////////////////////////
         checkBox1 = findViewById(R.id.checkBox1);
         checkBox2 = findViewById(R.id.checkBox2);
         checkBox3 = findViewById(R.id.checkBox3);
@@ -22,7 +23,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         checkBox1.setOnClickListener(this);
         checkBox2.setOnClickListener(this);
         checkBox3.setOnClickListener(this);
-/////////////////BUTTON //////////////////////////////////////
+        /////////BUTTON //////////////////////////////
         Button buttonEnter = findViewById(R.id.button1);
         buttonEnter.setOnClickListener(this);
     }
@@ -39,9 +40,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         if(v.getId() == R.id.button1) {
             SaveLoadAppData save = new SaveLoadAppData(SettingsActivity.this);
             save.saveData(checkBox2.isChecked(), checkBox3.isChecked());
-            checkBox1.setText(save.getCommand());//do usuniecie
             Toast.makeText(getApplicationContext(), "Settings saved - please wait", Toast.LENGTH_SHORT).show();
-            finish();//close activity
+            finish();
         }
     }
 }
