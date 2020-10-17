@@ -75,11 +75,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btTurnOn();
         btFindPairedDevices();
         try {
-            btMakeConnection();
+            //btMakeConnection();
             //
-            if(isBluetoothConnection) {
-                btConnectedThread = new BTconnectedThread(bluetoothSocket);
+
+                btConnectedThread = new BTconnectedThread();
                 btConnectedThread.start();
+            if(isBluetoothConnection) {
                 sendCommandThread = new SendCommandThread();
                 sendCommandThread.start();
                 SaveLoadAppData data = new SaveLoadAppData(MainActivity.this);
@@ -101,8 +102,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             isBluetoothConnection = true;
             textView.setText(R.string.connected);
         } catch (Exception e) {
+            try {
+                bluetoothSocket.close();
+            } catch (Exception closeException) {
+                Toast.makeText(getApplicationContext(), "Could not close the client socket", Toast.LENGTH_SHORT).show();
+            }
             textView.setText(R.string.disconnected);
-            Toast.makeText(getApplicationContext(), "ERROR - try connect again", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "ERROR - try connect again", Toast.LENGTH_SHORT).show();
         }
     }
     private void btDisconnect() {//////////////////////////////////BTdisconnect///////////////////////////////
@@ -147,23 +153,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 /////////////////////////////////////create new class for connect thread//////////////////////////////////////////////////////////
     private class BTconnectedThread extends Thread {
-        private final InputStream mmInStream;
-        private final OutputStream mmOutStream;
+        private final InputStream bluetoothInStream;
+        private final OutputStream bluetoothOutStream;
         private volatile boolean isThreadOn=true;
         //creation of the connect thread
-        BTconnectedThread(BluetoothSocket socket) {
+        BTconnectedThread() {
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
             try {
+                BluetoothDevice bluetoothDevice = bluetoothAdapter.getRemoteDevice(bluetoothAddress);
+                bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(myUUID);
+                bluetoothSocket.connect();
+                Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+                isBluetoothConnection = true;
+                textView.setText(R.string.connected);
                 //Create I/O streams for connection
-                tmpIn = socket.getInputStream();
-                tmpOut = socket.getOutputStream();
+                tmpIn = bluetoothSocket.getInputStream();
+                tmpOut = bluetoothSocket.getOutputStream();
             }
-            catch (IOException e) {
-                Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_SHORT).show();
+            catch (Exception e) {
+                try {
+                    bluetoothSocket.close();
+                } catch (Exception closeException) {
+                    Toast.makeText(getApplicationContext(), "Could not close the client socket", Toast.LENGTH_SHORT).show();
+                }
+                textView.setText(R.string.disconnected);
+                //Toast.makeText(getApplicationContext(), "ERROR - try connect again", Toast.LENGTH_SHORT).show();
             }
-            mmInStream = tmpIn;
-            mmOutStream = tmpOut;
+            bluetoothInStream = tmpIn;
+            bluetoothOutStream = tmpOut;
         }
         void stopMe(){
             isThreadOn=false;
@@ -176,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // Keep looping to listen for received messages
             while (isThreadOn) {
                 try {
-                    bytes = mmInStream.read(buffer);            //read bytes from input buffer
+                    bytes = bluetoothInStream.read(buffer);            //read bytes from input buffer
                     if(buffer[0] == 'M')
                     {
                         messageFromMCU = ""; buffer[0] = ' ';
@@ -186,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     {
                         messageFromMCU = messageFromMCU + text;
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     break;
                 }
             }
@@ -194,8 +212,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //write method
         void sendCommandViaBluetooth(String input) {
             try {
-                mmOutStream.write(input.getBytes()); //write bytes over BT connection via outstream //converts entered String into bytes
-                sendCommandThread.setIncomeText(messageFromMCU);
+                bluetoothOutStream.write(input.getBytes()); //write bytes over BT connection via outstream //converts entered String into bytes
+                //sendCommandThread.setIncomeText(messageFromMCU);
             } catch (IOException e) {
                 //if you cannot write, close the application
                 Toast.makeText(getBaseContext(), "THREAD Failure", Toast.LENGTH_LONG).show();
@@ -234,9 +252,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             while (isThreadOn)
             {
                 try{
-                    sleep(2500);//opóźnienie kolejnego pomiaru
                     btConnectedThread.sendCommandViaBluetooth("____TH____");
-                    setText(incomeText);
+                    sleep(2500);//opóźnienie kolejnego pomiaru
+                    setText(messageFromMCU);
                     runOnUiThread(new Runnable() { //https://medium.com/@yossisegev/understanding-activity-runonuithread-e102d388fe93
                         @Override
                     public void run() {
