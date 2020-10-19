@@ -87,12 +87,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 TimeCommands commands = new TimeCommands();
                 btConnectedThread.sendCommandViaBluetooth(commands.getDateCommand());
                 btConnectedThread.sendCommandViaBluetooth(commands.getTimeCommand());
-                btConnectedThread.sendCommandViaBluetooth(data.getCommand());
+                btConnectedThread.sendCommandViaBluetooth(data.getDisplayMode());
+                btConnectedThread.sendCommandViaBluetooth(data.getAlarm());//alarm, 18:20, ST- stan = 1 - włączony
+                //textView.setText(data.getAlarm());
             }
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Connection error", Toast.LENGTH_SHORT).show();
         }
     }
+    /*//użyte gdzie indziej// btConnectthread
     private void btMakeConnection() {////////////////////////////////////////BTmakeConnection//////////////////////////////
         try {
             BluetoothDevice bluetoothDevice = bluetoothAdapter.getRemoteDevice(bluetoothAddress);
@@ -111,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //Toast.makeText(getApplicationContext(), "ERROR - try connect again", Toast.LENGTH_SHORT).show();
         }
     }
+    */
     private void btDisconnect() {//////////////////////////////////BTdisconnect///////////////////////////////
         try {
             bluetoothSocket.close();
