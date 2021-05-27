@@ -4,54 +4,52 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/pumpernikiel"
+    android:background="@drawable/drop_of_water_4050336_1280"
     tools:context=".MainActivity">
 
     <Button
         android:id="@+id/buttonReConnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#29B6F6"
-        android:text="RECONECT"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="100dp"
+        android:backgroundTint="#8DFF80"
+        android:text="RECONNECT"
+        app:layout_constraintBottom_toTopOf="@+id/buttonDisconnect"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewHUM" />
 
     <Button
         android:id="@+id/buttonDisconnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
         android:backgroundTint="#FA0042"
         android:text="DISCONNECT"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSettings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonReConnect"
-        app:layout_constraintVertical_bias="0.018" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonReConnect" />
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Disconnected"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonReConnect"
-        app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.022" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewTEMP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="50dp"
         android:text="Temperature"
         android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/textViewHUM"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -59,13 +57,14 @@
         android:id="@+id/textViewHUM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
         android:text="Humidity"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/buttonReConnect"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTEMP"
-        app:layout_constraintVertical_bias="0.158" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewTEMP" />
 
     <Button
         android:id="@+id/buttonSettings"
@@ -75,9 +74,8 @@
         android:text="SETTINGS"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.486"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonDisconnect"
-        app:layout_constraintVertical_bias="0.141" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonDisconnect" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

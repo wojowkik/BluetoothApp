@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             //btMakeConnection();
             //
-
                 btConnectedThread = new BTconnectedThread();
                 btConnectedThread.start();
             if(isBluetoothConnection) {
@@ -95,31 +94,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(getApplicationContext(), "Connection error", Toast.LENGTH_SHORT).show();
         }
     }
-    /*//użyte gdzie indziej// btConnectthread
-    private void btMakeConnection() {////////////////////////////////////////BTmakeConnection//////////////////////////////
-        try {
-            BluetoothDevice bluetoothDevice = bluetoothAdapter.getRemoteDevice(bluetoothAddress);
-            bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(myUUID);
-            bluetoothSocket.connect();
-            Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
-            isBluetoothConnection = true;
-            textView.setText(R.string.connected);
-        } catch (Exception e) {
-            try {
-                bluetoothSocket.close();
-            } catch (Exception closeException) {
-                Toast.makeText(getApplicationContext(), "Could not close the client socket", Toast.LENGTH_SHORT).show();
-            }
-            textView.setText(R.string.disconnected);
-            //Toast.makeText(getApplicationContext(), "ERROR - try connect again", Toast.LENGTH_SHORT).show();
-        }
-    }
-    */
+
     private void btDisconnect() {//////////////////////////////////BTdisconnect///////////////////////////////
         try {
             bluetoothSocket.close();
-            textView.setText(R.string.disconnected);
             isBluetoothConnection = false;
+            textView.setText(R.string.disconnected);
         } catch (Exception e) {//powodowało błędy z połączeniem, uruchamianiem BT - "IOExeption" - po zamianie działą
             Toast.makeText(getApplicationContext(), "Could not close the client socket", Toast.LENGTH_SHORT).show();
         }
@@ -264,8 +244,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void run() {
                                 textViewTEMP.setText(temp);
                                 textViewHUM.setText(hum);
-                    }
-                });
+                    }});
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
